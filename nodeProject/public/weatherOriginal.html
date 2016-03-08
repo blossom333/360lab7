@@ -1,0 +1,126 @@
+<head>
+<title>City Finder</title>
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+
+<script>
+$(document).ready(function() {
+$("#cityfield" ).keyup(function() {
+
+var url = "http://ec2-52-33-117-158.us-west-2.compute.amazonaws.com:3003/getcity.cgi?q="+$("#cityfield").val();
+ $.getJSON(url,function(data) {
+           var everything;
+           everything = "<ul>";
+           $.each(data, function(i,item) {
+           everything += "<li> "+data[i].city;
+});
+
+everything += "</ul>";
+$("#txtHint").html(everything);
+          });
+
+});
+$("#button").click(function(e){
+  var value = $("#cityfield").val();
+  var value = $("#stateField").val();
+  console.log(value);
+  console.log(value2);
+  e.preventDefault();
+  $("#dispcity").text(value);
+ var myurl= "https://api.wunderground.com/api/09cb6444b9c4f8ef/geolookup/conditions/q/UT/";
+
+myurl += value;
+myurl += ".json";
+console.log(myurl);
+
+$.ajax({
+url : myurl,
+dataType : "jsonp",
+success : function(parsed_json) {
+var location = parsed_json['location']['city'];
+var temp_string = parsed_json['current_observation']['temperature_string'];
+var current_weather = parsed_json['current_observation']['weather'];
+ function doit() {
+  console.log("Function");
+  var GITHUBAPI = "https://api.github.com/users/mjcleme/gists";
+  $.ajax({
+    url: GITHUBAPI,
+    success: function( data ) {
+      console.log(data);
+      var gitData = data[0].owner.id;
+      d = "<ul>";
+      d += "<li>Github ID: " + gitData;
+      d += "</ul>";
+      $("#github").html(d);
+    }
+  });
+});
+doit();
+everything = "<ul>";
+everything += "<li>Location: "+location;
+everything += "<li>Temperature: "+temp_string;
+everything += "<li>Weather: "+current_weather;
+everything += "</ul>";
+$("#weather").html(everything);
+}
+});
+//$("#stateField" ).keyup(function() {
+
+var birdUrl = "http://ec2-52-33-117-158.us-west-2.compute.amazonaws.com:3003/stateBirds.cgi?q="+$("#stateField").val();
+ //$.getJSON(url,function(data) {
+          // var Bird;
+          // $.each(data, function(i,item) {
+          // Bird = data[i].birds;
+//});
+
+//});
+$("#button").click(function(e){
+  var value = $("#cityfield").val();
+  console.log(value);
+  e.preventDefault();
+  $("#dispcity").text(value);
+ var myurl= "https://api.wunderground.com/api/09cb6444b9c4f8ef/geolookup/conditions/q/UT/";
+
+myurl += value;
+myurl += ".json";
+console.log(myurl);
+
+
+$.ajax({
+	url : birUrl,
+	dataType : "jsonp",
+	success : function(parsed_json) {
+	var bird = parsed_json['birds'];
+	FoundBird = "<ul>";
+	FoundBird += "<li>State Bird: "+bird;
+	FoundBird += "</ul>";
+	$("#birdFound").html(FoundBird);
+
+};
+});
+//});
+};
+
+</script>
+</head>
+<body>
+<form>
+Enter A Utah City: <input type="text" id="cityfield" value=""><br>
+Enter A State (To See State Bird): <input type="text" id="stateField" value=""><br>
+Suggestion: <span id="txtHint">Empty</span>
+<input id="button" type="submit" value="Submit">
+</form>
+<p>City</p>
+<textarea id="dispcity">No City</textarea>
+<p>Current Weather</p>
+<div id="weather">No weather</div>
+<div id="github">No github</div>
+<div id="birdFound">No bird</div>
+
+</body>
+</html>
+                                                                    
+
+
+
+
+

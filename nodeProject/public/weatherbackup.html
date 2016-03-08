@@ -1,0 +1,117 @@
+<head>
+<title>City Finder</title>
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+
+<script>
+$(document).ready(function() {
+$("#cityfield" ).keyup(function() {
+
+var url = "https://students.cs.byu.edu/~clement/CS360/ajax/getcity.cgi?q="+$("#cityfield").val();
+ $.getJSON(url,function(data) {
+           var everything;
+           everything = "<ul>";
+           $.each(data, function(i,item) {
+           everything += "<li> "+data[i].city;
+});
+
+everything += "</ul>";
+$("#txtHint").html(everything);
+          });
+
+});
+$("#button").click(function(e){
+  var value = $("#cityfield").val();
+  console.log(value);
+  e.preventDefault();
+  $("#dispcity").text(value);
+ var myurl= "https://api.wunderground.com/api/09cb6444b9c4f8ef/geolookup/conditions/q/UT/";
+
+myurl += value;
+myurl += ".json";
+console.log(myurl);
+
+$.ajax({
+url : myurl,
+dataType : "jsonp",
+success : function(parsed_json) {
+var location = parsed_json['location']['city'];
+var temp_string = parsed_json['current_observation']['temperature_string'];
+var current_weather = parsed_json['current_observation']['weather'];
+ function doit() {
+  console.log("Function");
+  var GITHUBAPI = "https://api.github.com/users/mjcleme/gists";
+  $.ajax({
+    url: GITHUBAPI,
+    success: function( data ) {
+      console.log(data);
+      var gitData = data[0].owner.id;
+      d = "<ul>";
+      d += "<li>Github ID: " + gitData;
+      d += "</ul>";
+      $("#github").html(d);
+    }
+  });
+};
+
+function getbird() {
+  console.log("Bird Function");
+  var value2 = $("#statefield").val();
+  var birdUrl = "http://ec2-52-33-117-158.us-west-2.compute.amazonaws.com:3003/stateBirds?q="+value2;
+  console.log(value2);
+
+  $.ajax({
+    url: birdUrl,
+    dataType : "jsonp",
+    success: function( json_data ) {
+      alert("here bird");
+      console.log(json_data);
+      var foundBird = json_data['birds'];
+      console.log("found bird:" + foundBird);
+      var b = "";
+      b = "<ul>";
+      b += "<li>State Bird: " + foundBird;
+      b += "</ul>";
+      $("#stateBird").html(b);
+    }
+  });
+};
+
+getbird();
+doit();
+
+everything = "<ul>";
+everything += "<li>Location: "+location;
+everything += "<li>Temperature: "+temp_string;
+everything += "<li>Weather: "+current_weather;
+everything += "</ul>";
+$("#weather").html(everything);
+}
+});
+ 
+});
+});
+
+</script>
+</head>
+<body>
+<form>
+Enter A Utah City: <input type="text" id="cityfield" value=""><br>
+Enter A State: <input type="text" id="statefield" value=""><br>
+Suggestion: <span id="txtHint">Empty</span>
+<input id="button" type="submit" value="Submit">
+</form>
+<p>City</p>
+<textarea id="dispcity">No City</textarea>
+<p>Current Weather</p>
+<div id="weather">No weather</div>
+<div id="stateBird">No bird</div>
+<div id="github">No github ID</div>
+
+</body>
+</html>
+                                                                           
+
+
+
+
+
